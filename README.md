@@ -51,6 +51,6 @@ if (N > 2300) // половина
 else
 
 {
-  Yellow = K*2;
+  Yellow = 255 - K*2;
 }
 
