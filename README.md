@@ -39,4 +39,5 @@ if (Nppm > 5000)
 K = (Nppm - 400) / 18 
 
 Red = K
+
 Green = 255 - K
