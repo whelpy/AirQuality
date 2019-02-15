@@ -31,9 +31,9 @@ if (Nppm <400)
    Nppm = 400;
 }
 
-if (Nppm > 5000)
+if (Nppm > 4990)
 {
-  Nppm = 5000;
+  Nppm = 4990;
 }
 
 K = (Nppm - 400) / 18 
