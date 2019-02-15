@@ -13,3 +13,15 @@ CO2
 5,000	Workplace exposure limit (as 8-hour TWA) in most jurisdictions.
 
 over 40,000 ppm	Exposure may lead to serious oxygen deprivation resulting in permanent brain damage, coma, even death.
+
+255 0 0
+248 7 0
+241 14 0
+234 21 0
+
+each step red -7, green +7, blue is not needed
+
+0 255 0
+
+при этом 400 ppm (минимум датчика) считать за 255 зелёный и 0 красный, а 5000 ppm - максимум по санитарным нормам, считать за 0 зелёный, 255 красный. между ними 254 смешанных цвета (+1 к одному и -1 к другому каждый шаг)
+т.е. каждые 18 ppm это изменение состояния цвета на 1 шаг
