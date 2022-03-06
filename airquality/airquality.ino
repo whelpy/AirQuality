@@ -1,10 +1,15 @@
 #include <Adafruit_CCS811.h>
 
 #include <Wire.h> 
+#include <DHT.h>
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x3F,16,2);  // Устанавливаем дисплей
 
 Adafruit_CCS811 ccs;
+
+#define DHTPIN 4     // what pin we're connected to
+#define DHTTYPE DHT22   // DHT 22  (AM2302)
+DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 
 void setup()
 {
@@ -20,10 +25,13 @@ void setup()
     while(1);
   }
 
+  dht.begin();
+
   //calibrate temperature sensor
   while(!ccs.available());
-  float temp = ccs.calculateTemperature();
-  ccs.setTempOffset(temp - 23.0);
+  float tempDht = dht.readTemperature();
+  float tempCcs = ccs.calculateTemperature();
+  ccs.setTempOffset(tempCcs - tempDht);
 }
 void loop()
 {
@@ -31,7 +39,15 @@ void loop()
   //lcd.print(millis()/1000);
 
   if(ccs.available()){
-    float temp = ccs.calculateTemperature();
+
+    float  hum = dht.readHumidity();
+    float  temp= dht.readTemperature();
+     Serial.print("Humidity: ");
+    Serial.print(hum);
+    Serial.print(" %, Temp: ");
+    Serial.print(temp);
+    Serial.println(" Celsius");
+    
     if(!ccs.readData()){
       lcd.setCursor(0, 0);
       lcd.print("CO2:");      
@@ -41,8 +57,14 @@ void loop()
       // Устанавливаем курсор на вторую строку и нулевой символ.
       lcd.setCursor(0, 1);
 
-      lcd.print("Temp:");
-      lcd.print(temp);
+      lcd.print("T:");
+      lcd.print((int)temp);
+      lcd.print("C");
+
+      lcd.setCursor(8, 1);
+      lcd.print("H:");
+      lcd.print((int)hum);
+      lcd.print("%");
     }
     else{
       lcd.print("ERROR!");
