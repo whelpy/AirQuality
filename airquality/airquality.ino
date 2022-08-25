@@ -11,6 +11,8 @@ Adafruit_CCS811 ccs;
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 
+int timeCounter = 0;
+
 void setup()
 {
   lcd.init();                     
@@ -29,9 +31,12 @@ void setup()
 
   //calibrate temperature sensor
   while(!ccs.available());
-  float tempDht = dht.readTemperature();
-  float tempCcs = ccs.calculateTemperature();
-  ccs.setTempOffset(tempCcs - tempDht);
+
+    float  hum = dht.readHumidity();
+    float  temp= dht.readTemperature();
+
+    ccs.setEnvironmentalData(hum, temp);
+
 }
 void loop()
 {
@@ -42,7 +47,8 @@ void loop()
 
     float  hum = dht.readHumidity();
     float  temp= dht.readTemperature();
-     Serial.print("Humidity: ");
+   
+    Serial.print("Humidity: ");
     Serial.print(hum);
     Serial.print(" %, Temp: ");
     Serial.print(temp);
@@ -65,6 +71,12 @@ void loop()
       lcd.print("H:");
       lcd.print((int)hum);
       lcd.print("%");
+
+      if (timeCounter > 120) // every 1 minute
+      {
+        timeCounter = 0;
+        ccs.setEnvironmentalData(hum, temp);
+      } 
     }
     else{
       lcd.print("ERROR!");
@@ -72,4 +84,6 @@ void loop()
     }
   }
   delay(500);
+  timeCounter++;
+ 
 }
